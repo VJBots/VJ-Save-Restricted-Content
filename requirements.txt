@@ -1,0 +1,2 @@
+pyrogram
+tgcrypto
