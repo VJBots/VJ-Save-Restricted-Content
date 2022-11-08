@@ -9,19 +9,19 @@
     "repository": "https://github.com/ClubFX/Save-Restricted-Bot",
     "website": "https://github.com/ClubFX/Save-Restricted-Bot",
     "env": {
-        "API_ID": {
+        "ID": {
           "description": "Get this value from my.telegram.org",
           "required": true
         },
-        "API_HASH": {
+        "HASH": {
           "description": "Get this value from my.telegram.org",
           "required": true
         },
-        "BOT_TOKEN": {
+        "TOKEN": {
           "description": "Get this from @BotFather",
           "required": true
         },
-        "SESSION_STRING": {
+        "STRING": {
           "description": "Your telegram account session. Get it from https://replit.com/@ClubFX/GenerateStringSession?v=1",
           "required": true
         }
