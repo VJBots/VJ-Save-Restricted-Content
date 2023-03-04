@@ -15,12 +15,13 @@
 
 # Usage
 
-```
-FOR PUBLIC CHATS 
-just send post/s link
+__FOR PUBLIC CHATS__
 
-FOR PRIVATE CHATS
-first send invite link of the chat (unnecessary if the account of string session already member of the chat)
-then send post/s link
-```
+_just send post/s link_
 
+<br>
+
+__FOR PRIVATE CHATS__
+
+_first send invite link of the chat (unnecessary if the account of string session already member of the chat)
+then send post/s link_
