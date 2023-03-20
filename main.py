@@ -71,6 +71,10 @@ def save(client: pyrogram.client.Client, message: pyrogram.types.messages_and_me
 	# joining chats
 	if "https://t.me/+" in message.text or "https://t.me/joinchat/" in message.text:
 
+		if acc is None:
+			bot.send_message(message.chat.id,f"**String Session is not Set**", reply_to_message_id=message.id)
+			return
+
 		try:
 			try: acc.join_chat(message.text)
 			except Exception as e: 
