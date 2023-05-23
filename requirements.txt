@@ -1,2 +1,3 @@
 pyrogram
 tgcrypto
+flask==2.0.1

@@ -5,4 +5,4 @@ COPY requirements.txt /app/
 RUN pip3 install -r requirements.txt
 
 COPY . /app
-CMD python3 main.py
+CMD flask run -h 0.0.0.0 -p 10000 & python3 main.py

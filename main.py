@@ -105,7 +105,7 @@ def save(client: pyrogram.client.Client, message: pyrogram.types.messages_and_me
 		else:
 			username = datas[-2]
 			msg  = bot.get_messages(username,msgid)
-			try: bot.copy_message(message.chat.id, msg.chat.id, msg.id)
+			try: bot.copy_message(message.chat.id, msg.chat.id, msg.id,reply_to_message_id=message.id)
 			except:
 				if acc is None:
 					bot.send_message(message.chat.id,f"**String Session is not Set**", reply_to_message_id=message.id)
