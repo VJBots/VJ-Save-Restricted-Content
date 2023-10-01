@@ -26,9 +26,9 @@ _first send invite link of the chat (unnecessary if the account of string sessio
 then send post/s link_
 
 
-__Multi Posts__
+__MULTI POSTS__
 
-_send public/private posts link as explained above with formate "from - tag" to send multiple messges_
+_send public/private posts link as explained above with formate "from - to" send multiple messages_
 
 examples: 
 
