@@ -6,13 +6,17 @@ from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 import time
 import os
 import threading
+import json
 
-bot_token = os.environ.get("TOKEN", None) 
-api_hash = os.environ.get("HASH", None) 
-api_id = os.environ.get("ID", None)
+with open('config.json', 'r') as f: DATA = json.load(f)
+def getenv(var): return os.environ.get(var) or DATA.get(var, None)
+
+bot_token = getenv("TOKEN") 
+api_hash = getenv("HASH") 
+api_id = getenv("ID")
 bot = Client("mybot", api_id=api_id, api_hash=api_hash, bot_token=bot_token)
 
-ss = os.environ.get("STRING", None)
+ss = getenv("STRING")
 if ss is not None:
 	acc = Client("myacc" ,api_id=api_id, api_hash=api_hash, session_string=ss)
 	acc.start()
@@ -90,33 +94,38 @@ def save(client: pyrogram.client.Client, message: pyrogram.types.messages_and_me
 	elif "https://t.me/" in message.text:
 
 		datas = message.text.split("/")
-		msgid = int(datas[-1].split("?")[0])
+		temp = datas[-1].replace("?single","").split("-")
+		fromID = int(temp[0].strip())
+		try: toID = int(temp[1].strip())
+		except: toID = fromID
 
-		# private
-		if "https://t.me/c/" in message.text:
-			chatid = int("-100" + datas[-2])
-			if acc is None:
-				bot.send_message(message.chat.id,f"**String Session is not Set**", reply_to_message_id=message.id)
-				return
-			try: handle_private(message,chatid,msgid)
-			except Exception as e: bot.send_message(message.chat.id,f"**Error** : __{e}__", reply_to_message_id=message.id)
-		
-		# public
-		else:
-			username = datas[-2]
-			msg  = bot.get_messages(username,msgid)
-			try: bot.copy_message(message.chat.id, msg.chat.id, msg.id,reply_to_message_id=message.id)
-			except:
+		for msgid in range(fromID, toID+1):
+
+			# private
+			if "https://t.me/c/" in message.text:
+				chatid = int("-100" + datas[-2])
 				if acc is None:
 					bot.send_message(message.chat.id,f"**String Session is not Set**", reply_to_message_id=message.id)
 					return
-				try: handle_private(message,username,msgid)
+				try: handle_private(message,chatid,msgid)
 				except Exception as e: bot.send_message(message.chat.id,f"**Error** : __{e}__", reply_to_message_id=message.id)
-	
+			
+			# public
+			else:
+				username = datas[-2]
+				msg  = bot.get_messages(username,msgid)
+				try: bot.copy_message(message.chat.id, msg.chat.id, msg.id,reply_to_message_id=message.id)
+				except:
+					if acc is None:
+						bot.send_message(message.chat.id,f"**String Session is not Set**", reply_to_message_id=message.id)
+						return
+					try: handle_private(message,username,msgid)
+					except Exception as e: bot.send_message(message.chat.id,f"**Error** : __{e}__", reply_to_message_id=message.id)
+		
 
 # handle private
-def handle_private(message,chatid,msgid):
-		msg  = acc.get_messages(chatid,msgid)
+def handle_private(message: pyrogram.types.messages_and_media.message.Message, chatid: int, msgid: int):
+		msg: pyrogram.types.messages_and_media.message.Message = acc.get_messages(chatid,msgid)
 
 		if "text" in str(msg):
 			bot.send_message(message.chat.id, msg.text, entities=msg.entities, reply_to_message_id=message.id)

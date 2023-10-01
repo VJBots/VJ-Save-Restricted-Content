@@ -19,9 +19,23 @@ __FOR PUBLIC CHATS__
 
 _just send post/s link_
 
-<br>
 
 __FOR PRIVATE CHATS__
 
 _first send invite link of the chat (unnecessary if the account of string session already member of the chat)
 then send post/s link_
+
+
+__Multi Posts__
+
+_send public/private posts link as explained above with formate "from - tag" to send multiple messges_
+
+examples: 
+
+```
+https://t/me/xx/1001-1010
+
+https://t.me/c/xxx/101 - 120
+```
+
+Note: Space in between doesn't matter
