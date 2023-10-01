@@ -28,7 +28,7 @@ then send post/s link_
 
 __MULTI POSTS__
 
-_send public/private posts link as explained above with formate "from - to" send multiple messages_
+_send public/private posts link as explained above with formate "from - to" to send multiple messages_
 
 examples: 
 
@@ -38,4 +38,4 @@ https://t/me/xx/1001-1010
 https://t.me/c/xxx/101 - 120
 ```
 
-Note: Space in between doesn't matter
+note: space in between doesn't matter
