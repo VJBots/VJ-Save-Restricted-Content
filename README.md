@@ -33,9 +33,9 @@ _send public/private posts link as explained above with formate "from - to" to s
 examples: 
 
 ```
-https://t/me/xx/1001-1010
+https://t.me/xxxx/1001-1010
 
-https://t.me/c/xxx/101 - 120
+https://t.me/c/xxxx/101 - 120
 ```
 
 note: space in between doesn't matter
