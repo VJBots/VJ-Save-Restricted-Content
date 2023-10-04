@@ -121,7 +121,9 @@ def save(client: pyrogram.client.Client, message: pyrogram.types.messages_and_me
 						return
 					try: handle_private(message,username,msgid)
 					except Exception as e: bot.send_message(message.chat.id,f"**Error** : __{e}__", reply_to_message_id=message.id)
-		
+
+			# wait time
+			time.sleep(3)
 
 # handle private
 def handle_private(message: pyrogram.types.messages_and_media.message.Message, chatid: int, msgid: int):
