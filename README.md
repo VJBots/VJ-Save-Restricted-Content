@@ -9,7 +9,7 @@
 - `HASH` Your API Hash from my.telegram.org
 - `ID` Your API ID from my.telegram.org
 - `TOKEN` Your bot token from @BotFather
-- `STRING` Your session string, for examplpe you can get it at [replit.com](https://replit.com/@ErichDaniken/Generate-Telegram-String-Session)
+- `STRING` Your session string, you can get it at [replit](https://replit.com/@bipinkrish/Telegram-Session-String-Generater)
 
 ---
 
