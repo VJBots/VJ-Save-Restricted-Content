@@ -65,12 +65,13 @@ def progress(current, total, message, type):
 # start command
 @bot.on_message(filters.command(["start"]))
 def send_start(client: pyrogram.client.Client, message: pyrogram.types.messages_and_media.message.Message):
-	bot.send_message(message.chat.id, f"__👋 Hi **{message.from_user.mention}**, I am Save Restricted Bot, I can send you restricted content by it's post link__",
+	bot.send_message(message.chat.id, f"__👋 Hi **{message.from_user.mention}**, I am Save Restricted Bot, I can send you restricted content by it's post link__\n\n{USAGE}",
 	reply_markup=InlineKeyboardMarkup([[ InlineKeyboardButton("🌐 Source Code", url="https://github.com/bipinkrish/Save-Restricted-Bot")]]), reply_to_message_id=message.id)
 
 
 @bot.on_message(filters.text)
 def save(client: pyrogram.client.Client, message: pyrogram.types.messages_and_media.message.Message):
+	print(message.text)
 
 	# joining chats
 	if "https://t.me/+" in message.text or "https://t.me/joinchat/" in message.text:
@@ -129,7 +130,9 @@ def save(client: pyrogram.client.Client, message: pyrogram.types.messages_and_me
 def handle_private(message: pyrogram.types.messages_and_media.message.Message, chatid: int, msgid: int):
 		msg: pyrogram.types.messages_and_media.message.Message = acc.get_messages(chatid,msgid)
 
-		if "text" in str(msg):
+		msg_type = get_message_type(msg)
+
+		if "Text" == msg_type:
 			bot.send_message(message.chat.id, msg.text, entities=msg.entities, reply_to_message_id=message.id)
 			return
 
@@ -142,7 +145,7 @@ def handle_private(message: pyrogram.types.messages_and_media.message.Message, c
 		upsta = threading.Thread(target=lambda:upstatus(f'{message.id}upstatus.txt',smsg),daemon=True)
 		upsta.start()
 		
-		if "Document" in str(msg):
+		if "Document" == msg_type:
 			try:
 				thumb = acc.download_media(msg.document.thumbs[0].file_id)
 			except: thumb = None
@@ -150,7 +153,7 @@ def handle_private(message: pyrogram.types.messages_and_media.message.Message, c
 			bot.send_document(message.chat.id, file, thumb=thumb, caption=msg.caption, caption_entities=msg.caption_entities, reply_to_message_id=message.id, progress=progress, progress_args=[message,"up"])
 			if thumb != None: os.remove(thumb)
 
-		elif "Video" in str(msg):
+		elif "Video" == msg_type:
 			try: 
 				thumb = acc.download_media(msg.video.thumbs[0].file_id)
 			except: thumb = None
@@ -158,16 +161,16 @@ def handle_private(message: pyrogram.types.messages_and_media.message.Message, c
 			bot.send_video(message.chat.id, file, duration=msg.video.duration, width=msg.video.width, height=msg.video.height, thumb=thumb, caption=msg.caption, caption_entities=msg.caption_entities, reply_to_message_id=message.id, progress=progress, progress_args=[message,"up"])
 			if thumb != None: os.remove(thumb)
 
-		elif "Animation" in str(msg):
+		elif "Animation" == msg_type:
 			bot.send_animation(message.chat.id, file, reply_to_message_id=message.id)
 			   
-		elif "Sticker" in str(msg):
+		elif "Sticker" == msg_type:
 			bot.send_sticker(message.chat.id, file, reply_to_message_id=message.id)
 
-		elif "Voice" in str(msg):
+		elif "Voice" == msg_type:
 			bot.send_voice(message.chat.id, file, caption=msg.caption, thumb=thumb, caption_entities=msg.caption_entities, reply_to_message_id=message.id, progress=progress, progress_args=[message,"up"])
 
-		elif "Audio" in str(msg):
+		elif "Audio" == msg_type:
 			try:
 				thumb = acc.download_media(msg.audio.thumbs[0].file_id)
 			except: thumb = None
@@ -175,12 +178,77 @@ def handle_private(message: pyrogram.types.messages_and_media.message.Message, c
 			bot.send_audio(message.chat.id, file, caption=msg.caption, caption_entities=msg.caption_entities, reply_to_message_id=message.id, progress=progress, progress_args=[message,"up"])   
 			if thumb != None: os.remove(thumb)
 
-		elif "Photo" in str(msg):
+		elif "Photo" == msg_type:
 			bot.send_photo(message.chat.id, file, caption=msg.caption, caption_entities=msg.caption_entities, reply_to_message_id=message.id)
 
 		os.remove(file)
 		if os.path.exists(f'{message.id}upstatus.txt'): os.remove(f'{message.id}upstatus.txt')
 		bot.delete_messages(message.chat.id,[smsg.id])
+
+
+def get_message_type(msg: pyrogram.types.messages_and_media.message.Message):
+	try:
+		msg.text
+		return "Text"
+	except: pass
+
+	try:
+		msg.document
+		return "Document"
+	except: pass
+
+	try:
+		msg.video
+		return "Video"
+	except: pass
+
+	try:
+		msg.animation
+		return "Animation"
+	except: pass
+
+	try:
+		msg.sticker
+		return "Sticker"
+	except: pass
+
+	try:
+		msg.voice
+		return "Voice"
+	except: pass
+
+	try:
+		msg.audio
+		return "Audio"
+	except: pass
+
+	try:
+		msg.photo
+		return "Photo"
+	except: pass
+
+
+USAGE = """**FOR PUBLIC CHATS**
+
+__just send post/s link__
+
+**FOR PRIVATE CHATS**
+
+__first send invite link of the chat (unnecessary if the account of string session already member of the chat)
+then send post/s link__
+
+**MULTI POSTS**
+
+__send public/private posts link as explained above with formate "from - to" to send multiple messages like below__
+
+```
+https://t.me/xxxx/1001-1010
+
+https://t.me/c/xxxx/101 - 120
+```
+
+__note space in between doesn't matter__
+"""
 
 
 # infinty polling
