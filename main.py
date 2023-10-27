@@ -1,6 +1,6 @@
 import pyrogram
 from pyrogram import Client, filters
-from pyrogram.errors import UserAlreadyParticipant, InviteHashExpired
+from pyrogram.errors import UserAlreadyParticipant, InviteHashExpired, UsernameNotOccupied
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 
 import time
@@ -90,7 +90,7 @@ def save(client: pyrogram.client.Client, message: pyrogram.types.messages_and_me
 			bot.send_message(message.chat.id,"**Chat alredy Joined**", reply_to_message_id=message.id)
 		except InviteHashExpired:
 			bot.send_message(message.chat.id,"**Invalid Link**", reply_to_message_id=message.id)
-	
+
 	# getting message
 	elif "https://t.me/" in message.text:
 
@@ -104,17 +104,35 @@ def save(client: pyrogram.client.Client, message: pyrogram.types.messages_and_me
 
 			# private
 			if "https://t.me/c/" in message.text:
-				chatid = int("-100" + datas[-2])
+				chatid = int("-100" + datas[4])
+				
 				if acc is None:
 					bot.send_message(message.chat.id,f"**String Session is not Set**", reply_to_message_id=message.id)
 					return
-				try: handle_private(message,chatid,msgid)
-				except Exception as e: bot.send_message(message.chat.id,f"**Error** : __{e}__", reply_to_message_id=message.id)
+				
+				handle_private(message,chatid,msgid)
+				# try: handle_private(message,chatid,msgid)
+				# except Exception as e: bot.send_message(message.chat.id,f"**Error** : __{e}__", reply_to_message_id=message.id)
 			
+			# bot
+			elif "https://t.me/b/" in message.text:
+				username = datas[4]
+				
+				if acc is None:
+					bot.send_message(message.chat.id,f"**String Session is not Set**", reply_to_message_id=message.id)
+					return
+				try: handle_private(message,username,msgid)
+				except Exception as e: bot.send_message(message.chat.id,f"**Error** : __{e}__", reply_to_message_id=message.id)
+
 			# public
 			else:
-				username = datas[-2]
-				msg  = bot.get_messages(username,msgid)
+				username = datas[3]
+
+				try: msg  = bot.get_messages(username,msgid)
+				except UsernameNotOccupied: 
+					bot.send_message(message.chat.id,f"**The username is not occupied by anyone**", reply_to_message_id=message.id)
+					return
+
 				try: bot.copy_message(message.chat.id, msg.chat.id, msg.id,reply_to_message_id=message.id)
 				except:
 					if acc is None:
@@ -126,10 +144,10 @@ def save(client: pyrogram.client.Client, message: pyrogram.types.messages_and_me
 			# wait time
 			time.sleep(3)
 
+
 # handle private
 def handle_private(message: pyrogram.types.messages_and_media.message.Message, chatid: int, msgid: int):
 		msg: pyrogram.types.messages_and_media.message.Message = acc.get_messages(chatid,msgid)
-
 		msg_type = get_message_type(msg)
 
 		if "Text" == msg_type:
@@ -186,45 +204,46 @@ def handle_private(message: pyrogram.types.messages_and_media.message.Message, c
 		bot.delete_messages(message.chat.id,[smsg.id])
 
 
+# get the type of message
 def get_message_type(msg: pyrogram.types.messages_and_media.message.Message):
 	try:
-		msg.text
-		return "Text"
-	except: pass
-
-	try:
-		msg.document
+		msg.document.file_id
 		return "Document"
 	except: pass
 
 	try:
-		msg.video
+		msg.video.file_id
 		return "Video"
 	except: pass
 
 	try:
-		msg.animation
+		msg.animation.file_id
 		return "Animation"
 	except: pass
 
 	try:
-		msg.sticker
+		msg.sticker.file_id
 		return "Sticker"
 	except: pass
 
 	try:
-		msg.voice
+		msg.voice.file_id
 		return "Voice"
 	except: pass
 
 	try:
-		msg.audio
+		msg.audio.file_id
 		return "Audio"
 	except: pass
 
 	try:
-		msg.photo
+		msg.photo.file_id
 		return "Photo"
+	except: pass
+
+	try:
+		msg.text
+		return "Text"
 	except: pass
 
 
@@ -237,6 +256,14 @@ __just send post/s link__
 __first send invite link of the chat (unnecessary if the account of string session already member of the chat)
 then send post/s link__
 
+**FOR BOT CHATS**
+
+__send link with '/b/', bot's username and message id, you might want to install some unofficial client to get the id like below__
+
+```
+https://t.me/b/botusername/4321
+```
+
 **MULTI POSTS**
 
 __send public/private posts link as explained above with formate "from - to" to send multiple messages like below__
@@ -247,7 +274,7 @@ https://t.me/xxxx/1001-1010
 https://t.me/c/xxxx/101 - 120
 ```
 
-__note space in between doesn't matter__
+__note that space in between doesn't matter__
 """
 
 
