@@ -8,8 +8,8 @@
 
 - `HASH` Your API Hash from my.telegram.org
 - `ID` Your API ID from my.telegram.org
-- `TOKEN` Your bot token from @BotFather
-- `STRING` Your session string, you can get it at [gist](https://gist.github.com/bipinkrish/0940b30ed66a5537ae1b5aaaee716897#file-main-py) and run it locally
+- `TOKEN` Your bot token from [BotFather](https://telegram.me/BotFather)
+- `STRING` Your pyrogram session string, you can get it from [VJ String Session Generator Bot](https://telegram.me/VJStringSessionBot)
 
 ---
 
