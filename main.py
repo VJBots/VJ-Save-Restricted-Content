@@ -28,15 +28,15 @@ def downstatus(statusfile,message):
 		if os.path.exists(statusfile):
 			break
 
-	time.sleep(3)      
+	time.sleep(0)      
 	while os.path.exists(statusfile):
 		with open(statusfile,"r") as downread:
 			txt = downread.read()
 		try:
 			bot.edit_message_text(message.chat.id, message.id, f"__Downloaded__ : **{txt}**")
-			time.sleep(10)
+			time.sleep(0)
 		except:
-			time.sleep(5)
+			time.sleep(0)
 
 
 # upload status
@@ -45,15 +45,15 @@ def upstatus(statusfile,message):
 		if os.path.exists(statusfile):
 			break
 
-	time.sleep(3)      
+	time.sleep(0)      
 	while os.path.exists(statusfile):
 		with open(statusfile,"r") as upread:
 			txt = upread.read()
 		try:
 			bot.edit_message_text(message.chat.id, message.id, f"__Uploaded__ : **{txt}**")
-			time.sleep(10)
+			time.sleep(0)
 		except:
-			time.sleep(5)
+			time.sleep(0)
 
 
 # progress writter
@@ -66,7 +66,7 @@ def progress(current, total, message, type):
 @bot.on_message(filters.command(["start"]))
 def send_start(client: pyrogram.client.Client, message: pyrogram.types.messages_and_media.message.Message):
 	bot.send_message(message.chat.id, f"**__👋 Hi** **{message.from_user.mention}**, **I am Save Restricted Bot, I can send you restricted content by it's post link__**\n\n{USAGE}",
-	reply_markup=InlineKeyboardMarkup([[ InlineKeyboardButton("🌐 Update Channel", url="https://t.me/VJ_Botz")]]), reply_to_message_id=message.id)
+	reply_markup=InlineKeyboardMarkup([[ InlineKeyboardButton("🌐 Update Channel", url="https://t.me/Royalboy_bot00")]]), reply_to_message_id=message.id)
 
 
 @bot.on_message(filters.text)
