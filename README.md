@@ -10,6 +10,7 @@
 - `ID` Your API ID from my.telegram.org
 - `TOKEN` Your bot token from [BotFather](https://telegram.me/BotFather)
 - `STRING` Your pyrogram session string, you can get it from [VJ String Session Generator Bot](https://telegram.me/VJStringSessionBot)
+- <a href="https://heroku.com/deploy?template=https://github.com/tiger7815/KING007">
 
 ---
 
