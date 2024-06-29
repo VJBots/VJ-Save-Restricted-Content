@@ -48,5 +48,6 @@ _note that space in between doesn't matter_
 
 ### Credits
 
-<b>- [BipinKrish](https://github.com/bipinkrish) For Base Repo
+<b>
+- [BipinKrish](https://github.com/bipinkrish) For Base Repo
 - [Tech VJ](https://telegram.dog/Kingvj01) For Modify & Added Login Feature.</b>
