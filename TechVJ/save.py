@@ -12,6 +12,7 @@ import os
 import threading
 import json
 from config import APP_ID, API_HASH
+from database.db import database 
 
 
 def get(obj, key, default=None):
