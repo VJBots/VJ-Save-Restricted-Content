@@ -13,7 +13,7 @@ import threading
 import json
 from config import APP_ID, API_HASH
 from database.db import database 
-
+from TechVJ.strings import strings
 
 def get(obj, key, default=None):
     try:
