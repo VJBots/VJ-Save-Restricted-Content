@@ -16,7 +16,7 @@ from pyrogram.errors import (
     PasswordHashInvalid
 )
 from TechVJ.strings import strings
-from config import APP_ID, API_HASH
+from config import API_ID, API_HASH
 from database.db import database
 
 SESSION_STRING_SIZE = 351
@@ -51,7 +51,7 @@ async def main(bot: Client, message: Message):
     if phone_number_msg.text=='/cancel':
         return await phone_number_msg.reply('<b>process cancelled !</b>')
     phone_number = phone_number_msg.text
-    client = Client(":memory:", APP_ID, API_HASH)
+    client = Client(":memory:", API_ID, API_HASH)
     await client.connect()
     await phone_number_msg.reply("Sending OTP...")
     try:
@@ -93,7 +93,7 @@ async def main(bot: Client, message: Message):
                 'logged_in': True
             }
 
-            uclient = Client(":memory:", session_string=data['session'], api_id=APP_ID, api_hash=API_HASH)
+            uclient = Client(":memory:", session_string=data['session'], api_id=API_ID, api_hash=API_HASH)
             await uclient.connect()
 
             database.update_one({'_id': user_data['_id']}, {'$set': data})
