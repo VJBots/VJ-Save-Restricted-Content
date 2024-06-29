@@ -72,7 +72,7 @@ async def send_start(client: Client, message: Message):
         InlineKeyboardButton('🤖 ᴜᴘᴅᴀᴛᴇ ᴄʜᴀɴɴᴇʟ', url='https://t.me/vj_botz')
 	]]
     reply_markup = InlineKeyboardMarkup(buttons)
-    await client.send_message(message.chat.id, f"<b>👋 Hi {message.from_user.mention}, I am Save Restricted Content Bot, I can send you restricted content by its post link.\n</b>", reply_markup=reply_markup, reply_to_message_id=message.id)
+    await client.send_message(message.chat.id, f"<b>👋 Hi {message.from_user.mention}, I am Save Restricted Content Bot, I can send you restricted content by its post link.\n\nFor downloading restricted content /login first.</b>", reply_markup=reply_markup, reply_to_message_id=message.id)
     return
 
 
