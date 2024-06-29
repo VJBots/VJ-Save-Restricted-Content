@@ -11,15 +11,11 @@ from pyrogram.errors import (
     SessionPasswordNeeded,
     PasswordHashInvalid
 )
-from pymongo.mongo_client import MongoClient
-from pymongo.server_api import ServerApi
-from strings import strings
+from TechVJ.strings import strings
 from config import APP_ID, API_HASH
-from plugins.save import database, ACC_TXT
-
+from database.db import database
 
 SESSION_STRING_SIZE = 351
-
 
 def get(obj, key, default=None):
     try:
@@ -99,5 +95,5 @@ async def main(bot: Client, message: Message):
             database.update_one({'_id': user_data['_id']}, {'$set': data})
     except Exception as e:
         return await message.reply_text(f"<b>ERROR IN LOGIN:</b> `{e}`")
-    await bot.send_message(message.from_user.id, ACC_TXT)
+    await bot.send_message(message.from_user.id, "<b>Account Login Successfully.\n\nIf You Get Any Error Related To AUTH KEY Then /logout and /login again</b>")
 
