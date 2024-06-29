@@ -1,24 +1,19 @@
-#import uvloop
+# Don't Remove Credit Tg - @VJ_Botz
+# Subscribe YouTube Channel For Amazing Bot https://youtube.com/@Tech_VJ
+# Ask Doubt on telegram @KingVJ01
+
 from pyrogram import Client
 from pyromod import listen
-from config import APP_ID, API_HASH, TG_BOT_TOKEN
-import asyncio 
-from os import environ, execle, system
-
-async def restart_after_delay(delay):
-    await asyncio.sleep(delay)
-    system("git pull -f && pip3 install --no-cache-dir -r requirements.txt")
-    execle(sys.executable, sys.executable, "bot.py", environ)
-    print('🖍️ Bot Restarted After 15000 Seconds ✔️')
+from config import APP_ID, API_HASH, BOT_TOKEN
 
 class Bot(Client):
 
     def __init__(self):
         super().__init__(
-            "droplink search bot",
+            "techvj login",
             api_id=APP_ID,
             api_hash=API_HASH,
-            bot_token=TG_BOT_TOKEN,
+            bot_token=BOT_TOKEN,
             plugins=dict(root="plugins"),
             workers=50,
             sleep_threshold=10
@@ -30,8 +25,6 @@ class Bot(Client):
         await super().start()
         me = await self.get_me()
         self.username = '@' + me.username
-        print('Bot Restart After 15000 Second')
-        asyncio.create_task(restart_after_delay(15000))   
         print('Bot Started Powered By @VJ_Botz')
 
 
@@ -40,6 +33,6 @@ class Bot(Client):
         await super().stop()
         print('Bot Stopped Bye')
 
-
-#uvloop.install()
-
+# Don't Remove Credit Tg - @VJ_Botz
+# Subscribe YouTube Channel For Amazing Bot https://youtube.com/@Tech_VJ
+# Ask Doubt on telegram @KingVJ01
