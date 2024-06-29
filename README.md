@@ -9,7 +9,6 @@
 - `HASH` Your API Hash from my.telegram.org
 - `ID` Your API ID from my.telegram.org
 - `TOKEN` Your bot token from [BotFather](https://telegram.me/BotFather)
-- `STRING` Your pyrogram session string, you can get it from [VJ String Session Generator Bot](https://telegram.me/VJStringSessionBot)
 
 ---
 
@@ -49,5 +48,5 @@ _note that space in between doesn't matter_
 
 ### Credits
 
-- [BipinKrish](https://github.com/bipinkrish)
-- [Tech VJ](https://telegram.dog/Kingvj01)
+<b>- [BipinKrish](https://github.com/bipinkrish) For Base Repo
+- [Tech VJ](https://telegram.dog/Kingvj01) For Modify & Added Login Feature.</b>
