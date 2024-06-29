@@ -4,6 +4,8 @@
 
 ---
 
+<b>Watch Video Tutorial - [Click Here](https://youtu.be/CXw4NByRAac)</b>
+
 ## Variables
 
 - `API_HASH` : Your API Hash from [my.telegram.org](https://my.telegram.org)
