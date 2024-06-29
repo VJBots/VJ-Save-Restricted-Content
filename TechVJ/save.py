@@ -11,7 +11,7 @@ import time
 import os
 import threading
 import json
-from config import APP_ID, API_HASH
+from config import API_ID, API_HASH
 from database.db import database 
 from TechVJ.strings import strings
 
@@ -93,7 +93,7 @@ async def save(client: Client, message: Message):
                 if not get(user_data, 'logged_in', False) or user_data['session'] is None:
                     await client.send_message(message.chat.id, strings['need_login'])
                     return
-                acc = Client("saverestricted", session_string=user_data['session'], api_hash=API_HASH, api_id=APP_ID)
+                acc = Client("saverestricted", session_string=user_data['session'], api_hash=API_HASH, api_id=API_ID)
                 await acc.connect()
                 chatid = int("-100" + datas[4])
                 await handle_private(client, acc, message, chatid, msgid)
@@ -104,7 +104,7 @@ async def save(client: Client, message: Message):
                 if not get(user_data, 'logged_in', False) or user_data['session'] is None:
                     await client.send_message(message.chat.id, strings['need_login'])
                     return
-                acc = Client("saverestricted", session_string=user_data['session'], api_hash=API_HASH, api_id=APP_ID)
+                acc = Client("saverestricted", session_string=user_data['session'], api_hash=API_HASH, api_id=API_ID)
                 await acc.connect()
                 username = datas[4]
                 try:
@@ -129,7 +129,7 @@ async def save(client: Client, message: Message):
                         if not get(user_data, 'logged_in', False) or user_data['session'] is None:
                             await client.send_message(message.chat.id, strings['need_login'])
                             return
-                        acc = Client("saverestricted", session_string=user_data['session'], api_hash=API_HASH, api_id=APP_ID)
+                        acc = Client("saverestricted", session_string=user_data['session'], api_hash=API_HASH, api_id=API_ID)
                         await acc.connect()
                         await handle_private(client, acc, message, username, msgid)
                         
