@@ -13,7 +13,7 @@ import threading
 import json
 from config import API_ID, API_HASH
 from database.db import database 
-from TechVJ.strings import strings
+from TechVJ.strings import strings, HELP_TXT
 
 def get(obj, key, default=None):
     try:
@@ -72,9 +72,14 @@ async def send_start(client: Client, message: Message):
         InlineKeyboardButton('🤖 ᴜᴘᴅᴀᴛᴇ ᴄʜᴀɴɴᴇʟ', url='https://t.me/vj_botz')
 	]]
     reply_markup = InlineKeyboardMarkup(buttons)
-    await client.send_message(message.chat.id, f"<b>👋 Hi {message.from_user.mention}, I am Save Restricted Content Bot, I can send you restricted content by its post link.\n\nFor downloading restricted content /login first.</b>", reply_markup=reply_markup, reply_to_message_id=message.id)
+    await client.send_message(message.chat.id, f"<b>👋 Hi {message.from_user.mention}, I am Save Restricted Content Bot, I can send you restricted content by its post link.\n\nFor downloading restricted content /login first.\n\nKnow how to use bot by - /help</b>", reply_markup=reply_markup, reply_to_message_id=message.id)
     return
 
+
+# help command
+@Client.on_message(filters.command(["help"]))
+async def send_help(client: Client, message: Message):
+    await client.send_message(message.chat.id, f"{HELP_TXT}")
 
 @Client.on_message(filters.text & filters.private)
 async def save(client: Client, message: Message):
