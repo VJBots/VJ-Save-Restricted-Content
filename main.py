@@ -4,17 +4,17 @@
 
 from pyrogram import Client
 from pyromod import listen
-from config import APP_ID, API_HASH, BOT_TOKEN
+from config import API_ID, API_HASH, BOT_TOKEN
 
 class Bot(Client):
 
     def __init__(self):
         super().__init__(
             "techvj login",
-            api_id=APP_ID,
+            api_id=API_ID,
             api_hash=API_HASH,
             bot_token=BOT_TOKEN,
-            plugins=dict(root="plugins"),
+            plugins=dict(root="TechVJ"),
             workers=50,
             sleep_threshold=10
         )
@@ -23,10 +23,7 @@ class Bot(Client):
     async def start(self):
             
         await super().start()
-        me = await self.get_me()
-        self.username = '@' + me.username
         print('Bot Started Powered By @VJ_Botz')
-
 
     async def stop(self, *args):
 
