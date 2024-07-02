@@ -1,6 +1,8 @@
 {
-    "TOKEN": "",
-    "ID": "",
-    "HASH": "",
+    "TOKEN": "6746489857:AAFOGAmubH16HgoYiTQmC-yRjr6gMg9okNI",
+    "ID": "29939868",
+    "HASH": "1ee10fce7cb72aaf315b97f4b33decc0",
     "STRING": null
+    "DB_URL":"mongodb+srv://pranchal1419:<password>@cluster0.gicdshq.mongodb.net/"
+    
 }
