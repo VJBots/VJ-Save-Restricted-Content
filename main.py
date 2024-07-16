@@ -177,8 +177,8 @@ def handle_private(message: pyrogram.types.messages_and_media.message.Message, c
 			bot.send_video(message.chat.id, file, duration=msg.video.duration, width=msg.video.width, height=msg.video.height, thumb=thumb, caption=msg.caption, caption_entities=msg.caption_entities, reply_to_message_id=message.id, progress=progress, progress_args=[message,"up"])
 			if thumb != None: os.remove(thumb)
 
-		elif "Animation" == msg_type:
-			bot.send_animation(message.chat.id, file, reply_to_message_id=message.id)
+		elif "zip" == msg_type:
+			bot.send_zip(message.chat.id, file, reply_to_message_id=message.id)
 			   
 		elif "Sticker" == msg_type:
 			bot.send_sticker(message.chat.id, file, reply_to_message_id=message.id)
