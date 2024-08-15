@@ -6,7 +6,7 @@ import asyncio
 import pyrogram
 from pyrogram import Client, filters
 from pyrogram.errors import FloodWait, UserIsBlocked, InputUserDeactivated, UserAlreadyParticipant, InviteHashExpired, UsernameNotOccupied
-from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton, Message 
+from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton, Message, Chat
 import time
 import os
 import threading
@@ -21,14 +21,34 @@ def get(obj, key, default=None):
     except:
         return default
 
+def set_forward_chat(user_id: int, chat: Chat):
+    database.update_one(
+        {'chat_id': user_id},
+        {'$set': {'forward_chat_id': chat.id}},
+        upsert=True
+    )
+
+def get_forward_chat(user_id: int):
+    user_data = database.find_one({'chat_id': user_id})
+    return user_data.get('forward_chat_id') if user_data else None
+
+def set_remove_caption(user_id: int, remove: bool):
+    database.update_one(
+        {'chat_id': user_id},
+        {'$set': {'remove_caption': remove}},
+        upsert=True
+    )
+
+def get_remove_caption(user_id: int):
+    user_data = database.find_one({'chat_id': user_id})
+    return user_data.get('remove_caption', False) if user_data else False
 
 async def downstatus(client: Client, statusfile, message):
     while True:
         if os.path.exists(statusfile):
             break
-
         await asyncio.sleep(3)
-      
+    
     while os.path.exists(statusfile):
         with open(statusfile, "r") as downread:
             txt = downread.read()
@@ -38,14 +58,12 @@ async def downstatus(client: Client, statusfile, message):
         except:
             await asyncio.sleep(5)
 
-
-# upload status
 async def upstatus(client: Client, statusfile, message):
     while True:
         if os.path.exists(statusfile):
             break
-
-        await asyncio.sleep(3)      
+        await asyncio.sleep(3)
+    
     while os.path.exists(statusfile):
         with open(statusfile, "r") as upread:
             txt = upread.read()
@@ -55,14 +73,10 @@ async def upstatus(client: Client, statusfile, message):
         except:
             await asyncio.sleep(5)
 
-
-# progress writer
 def progress(current, total, message, type):
     with open(f'{message.id}{type}status.txt', "w") as fileup:
         fileup.write(f"{current * 100 / total:.1f}%")
 
-
-# start command
 @Client.on_message(filters.command(["start"]))
 async def send_start(client: Client, message: Message):
     buttons = [[
@@ -70,16 +84,36 @@ async def send_start(client: Client, message: Message):
     ],[
         InlineKeyboardButton('🔍 sᴜᴘᴘᴏʀᴛ ɢʀᴏᴜᴘ', url='https://t.me/vj_bot_disscussion'),
         InlineKeyboardButton('🤖 ᴜᴘᴅᴀᴛᴇ ᴄʜᴀɴɴᴇʟ', url='https://t.me/vj_botz')
-	]]
+    ]]
     reply_markup = InlineKeyboardMarkup(buttons)
     await client.send_message(message.chat.id, f"<b>👋 Hi {message.from_user.mention}, I am Save Restricted Content Bot, I can send you restricted content by its post link.\n\nFor downloading restricted content /login first.\n\nKnow how to use bot by - /help</b>", reply_markup=reply_markup, reply_to_message_id=message.id)
-    return
 
-
-# help command
 @Client.on_message(filters.command(["help"]))
 async def send_help(client: Client, message: Message):
     await client.send_message(message.chat.id, f"{HELP_TXT}")
+
+@Client.on_message(filters.command(["setchat"]))
+async def set_chat(client: Client, message: Message):
+    if len(message.command) > 1:
+        chat = message.command[1]
+        try:
+            chat = await client.get_chat(chat)
+            set_forward_chat(message.from_user.id, chat)
+            await message.reply(f"Set {chat.title} as forwarding destination.")
+        except Exception as e:
+            await message.reply(f"Error: {str(e)}")
+    else:
+        await message.reply("Please provide the chat ID or username. (Please add the bot as admin of your channel/chat group first, if already added, please add it again)")
+
+@Client.on_message(filters.command(["togglecaption"]))
+async def toggle_caption(client: Client, message: Message):
+    current_status = get_remove_caption(message.from_user.id)
+    new_status = not current_status
+    set_remove_caption(message.from_user.id, new_status)
+    if new_status:
+        await message.reply("Enabled caption removal when forwarding videos and photos.")
+    else:
+        await message.reply("Disabled caption removal when forwarding videos and photos.")
 
 @Client.on_message(filters.text & filters.private)
 async def save(client: Client, message: Message):
@@ -117,10 +151,9 @@ async def save(client: Client, message: Message):
                 except Exception as e:
                     await client.send_message(message.chat.id, f"Error: {e}", reply_to_message_id=message.id)
             
-	        # public
+            # public
             else:
                 username = datas[3]
-
                 try:
                     msg = await client.get_messages(username, msgid)
                 except UsernameNotOccupied: 
@@ -144,15 +177,23 @@ async def save(client: Client, message: Message):
             # wait time
             await asyncio.sleep(3)
 
-
-# handle private
 async def handle_private(client: Client, acc, message: Message, chatid: int, msgid: int):
     msg: Message = await acc.get_messages(chatid, msgid)
     msg_type = get_message_type(msg)
-    chat = message.chat.id
+    
+    forward_chat_id = get_forward_chat(message.from_user.id)
+    if forward_chat_id:
+        chat = forward_chat_id
+    else:
+        chat = message.chat.id
+
+    remove_caption = get_remove_caption(message.from_user.id)
+
     if "Text" == msg_type:
         try:
             await client.send_message(chat, msg.text, entities=msg.entities, reply_to_message_id=message.id)
+            if chat != message.chat.id:
+                await message.reply()
         except Exception as e:
             await client.send_message(message.chat.id, f"Error: {e}", reply_to_message_id=message.id)
             return
@@ -168,7 +209,7 @@ async def handle_private(client: Client, acc, message: Message, chatid: int, msg
     
     upsta = asyncio.create_task(upstatus(client, f'{message.id}upstatus.txt', smsg))
 
-    if msg.caption:
+    if msg.caption and not remove_caption:
         caption = msg.caption
     else:
         caption = None
@@ -180,7 +221,9 @@ async def handle_private(client: Client, acc, message: Message, chatid: int, msg
             ph_path = None
         
         try:
-            await client.send_document(chat, file, thumb=ph_path, caption=caption, reply_to_message_id=message.id, progress=progress, progress_args=[message,"up"])
+            sent_msg = await client.send_document(chat, file, thumb=ph_path, caption=caption, reply_to_message_id=message.id, progress=progress, progress_args=[message,"up"])
+            if chat != message.chat.id:
+                await message.reply()
         except Exception as e:
             await client.send_message(message.chat.id, f"Error: {e}", reply_to_message_id=message.id)
         if ph_path != None: os.remove(ph_path)
@@ -193,28 +236,37 @@ async def handle_private(client: Client, acc, message: Message, chatid: int, msg
             ph_path = None
         
         try:
-            await client.send_video(chat, file, duration=msg.video.duration, width=msg.video.width, height=msg.video.height, thumb=ph_path, caption=caption, reply_to_message_id=message.id, progress=progress, progress_args=[message,"up"])
+            video_caption = None if remove_caption else caption
+            sent_msg = await client.send_video(chat, file, duration=msg.video.duration, width=msg.video.width, height=msg.video.height, thumb=ph_path, caption=video_caption, reply_to_message_id=message.id, progress=progress, progress_args=[message,"up"])
+            if chat != message.chat.id:
+                await message.reply()
         except Exception as e:
             await client.send_message(message.chat.id, f"Error: {e}", reply_to_message_id=message.id)
         if ph_path != None: os.remove(ph_path)
 
     elif "Animation" == msg_type:
         try:
-            await client.send_animation(chat, file, reply_to_message_id=message.id)
+            sent_msg = await client.send_animation(chat, file, reply_to_message_id=message.id)
+            if chat != message.chat.id:
+                await message.reply()
         except Exception as e:
             await client.send_message(message.chat.id, f"Error: {e}", reply_to_message_id=message.id)
         
 
     elif "Sticker" == msg_type:
         try:
-            await client.send_sticker(chat, file, reply_to_message_id=message.id)
+            sent_msg = await client.send_sticker(chat, file, reply_to_message_id=message.id)
+            if chat != message.chat.id:
+                await message.reply()
         except Exception as e:
             await client.send_message(message.chat.id, f"Error: {e}", reply_to_message_id=message.id)
         
 
     elif "Voice" == msg_type:
         try:
-            await client.send_voice(chat, file, caption=caption, caption_entities=msg.caption_entities, reply_to_message_id=message.id, progress=progress, progress_args=[message,"up"])
+            sent_msg = await client.send_voice(chat, file, caption=caption, caption_entities=msg.caption_entities, reply_to_message_id=message.id, progress=progress, progress_args=[message,"up"])
+            if chat != message.chat.id:
+                await message.reply()
         except Exception as e:
             await client.send_message(message.chat.id, f"Error: {e}", reply_to_message_id=message.id)
 
@@ -225,7 +277,9 @@ async def handle_private(client: Client, acc, message: Message, chatid: int, msg
             ph_path = None
 
         try:
-            await client.send_audio(chat, file, thumb=ph_path, caption=caption, reply_to_message_id=message.id, progress=progress, progress_args=[message,"up"])   
+            sent_msg = await client.send_audio(chat, file, thumb=ph_path, caption=caption, reply_to_message_id=message.id, progress=progress, progress_args=[message,"up"])
+            if chat != message.chat.id:
+                await message.reply()
         except Exception as e:
             await client.send_message(message.chat.id, f"Error: {e}", reply_to_message_id=message.id)
         
@@ -233,17 +287,18 @@ async def handle_private(client: Client, acc, message: Message, chatid: int, msg
 
     elif "Photo" == msg_type:
         try:
-            await client.send_photo(chat, file, caption=caption, reply_to_message_id=message.id)
+            photo_caption = None if remove_caption else caption
+            sent_msg = await client.send_photo(chat, file, caption=photo_caption, reply_to_message_id=message.id)
+            if chat != message.chat.id:
+                await message.reply()
         except Exception as e:
             await client.send_message(message.chat.id, f"Error: {e}", reply_to_message_id=message.id)
-    
+            
     if os.path.exists(f'{message.id}upstatus.txt'): 
         os.remove(f'{message.id}upstatus.txt')
         os.remove(file)
     await client.delete_messages(message.chat.id,[smsg.id])
 
-
-# get the type of message
 def get_message_type(msg: pyrogram.types.messages_and_media.message.Message):
     try:
         msg.document.file_id
