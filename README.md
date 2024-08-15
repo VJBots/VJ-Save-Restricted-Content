@@ -17,6 +17,10 @@
 
 # Usage
 
+setchat: can forward restricted to other channel/group (Please add the bot as admin of your channel/chat group first, if already added, please add it again)
+
+togglecaption: remove caption from image or video
+
 __FOR PUBLIC CHATS__
 
 _just send post/s link_
