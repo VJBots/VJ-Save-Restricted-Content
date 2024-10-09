@@ -1,4 +1,4 @@
-pyrofork
+pyrofork==2.3.45
 tgcrypto
 flask
 gunicorn==20.1.0
