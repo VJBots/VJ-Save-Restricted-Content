@@ -1,6 +1,6 @@
-# Don't Remove Credit Tg - @VJ_Botz
+# Don't Remove Credit Tg - @Strangerboy27_bot_strangerboy
 # Subscribe YouTube Channel For Amazing Bot https://youtube.com/@Tech_VJ
-# Ask Doubt on telegram @KingVJ01
+# Ask Doubt on telegram @Strangerboy27_bot_strangerboy
 
 from pyrogram import Client
 from config import API_ID, API_HASH, BOT_TOKEN
@@ -22,7 +22,7 @@ class Bot(Client):
     async def start(self):
             
         await super().start()
-        print('Bot Started Powered By @VJ_Botz')
+        print('Bot Started Powered By @Strangerboy27_bot_strangerboy)
 
     async def stop(self, *args):
 
