@@ -1,14 +1,10 @@
 from pyrogram.errors import InputUserDeactivated, UserNotParticipant, FloodWait, UserIsBlocked, PeerIdInvalid
-from plugins.database import db
+from database.db import db
 from pyrogram import Client, filters
 from config import ADMINS
 import asyncio
 import datetime
 import time
-import logging
-
-logger = logging.getLogger(__name__)
-logger.setLevel(logging.INFO)
 
 async def broadcast_messages(user_id, message):
     try:
@@ -19,15 +15,12 @@ async def broadcast_messages(user_id, message):
         return await broadcast_messages(user_id, message)
     except InputUserDeactivated:
         await db.delete_user(int(user_id))
-        logging.info(f"{user_id}-Removed from Database, since deleted account.")
         return False, "Deleted"
     except UserIsBlocked:
         await db.delete_user(int(user_id))
-        logging.info(f"{user_id} -Blocked the bot.")
         return False, "Blocked"
     except PeerIdInvalid:
         await db.delete_user(int(user_id))
-        logging.info(f"{user_id} - PeerIdInvalid")
         return False, "Error"
     except Exception as e:
         return False, "Error"
@@ -37,6 +30,8 @@ async def broadcast_messages(user_id, message):
 async def verupikkals(bot, message):
     users = await db.get_all_users()
     b_msg = message.reply_to_message
+    if not b_msg:
+        return await message.reply_text("**Reply This Command To Your Broadcast Message**")
     sts = await message.reply_text(
         text='Broadcasting your messages...'
     )
