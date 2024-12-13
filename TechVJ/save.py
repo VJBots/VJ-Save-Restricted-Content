@@ -15,13 +15,6 @@ from config import API_ID, API_HASH
 from database.db import db
 from TechVJ.strings import HELP_TXT
 
-def get(obj, key, default=None):
-    try:
-        return obj[key]
-    except:
-        return default
-
-
 async def downstatus(client: Client, statusfile, message):
     while True:
         if os.path.exists(statusfile):
@@ -74,14 +67,22 @@ async def send_start(client: Client, message: Message):
         InlineKeyboardButton('🤖 ᴜᴘᴅᴀᴛᴇ ᴄʜᴀɴɴᴇʟ', url='https://t.me/vj_botz')
 	]]
     reply_markup = InlineKeyboardMarkup(buttons)
-    await client.send_message(message.chat.id, f"<b>👋 Hi {message.from_user.mention}, I am Save Restricted Content Bot, I can send you restricted content by its post link.\n\nFor downloading restricted content /login first.\n\nKnow how to use bot by - /help</b>", reply_markup=reply_markup, reply_to_message_id=message.id)
+    await client.send_message(
+	    chat_id=message.chat.id, 
+	    text=f"<b>👋 Hi {message.from_user.mention}, I am Save Restricted Content Bot, I can send you restricted content by its post link.\n\nFor downloading restricted content /login first.\n\nKnow how to use bot by - /help</b>", 
+	    reply_markup=reply_markup, 
+	    reply_to_message_id=message.id
+    )
     return
 
 
 # help command
 @Client.on_message(filters.command(["help"]))
 async def send_help(client: Client, message: Message):
-    await client.send_message(message.chat.id, f"{HELP_TXT}")
+    await client.send_message(
+		chat_id=message.chat.id, 
+		text=f"{HELP_TXT}"
+	)
 
 @Client.on_message(filters.text & filters.private)
 async def save(client: Client, message: Message):
@@ -141,6 +142,8 @@ async def save(client: Client, message: Message):
 # handle private
 async def handle_private(client: Client, acc, message: Message, chatid: int, msgid: int):
     msg: Message = await acc.get_messages(chatid, msgid)
+	if msg.empty:
+		return 
     msg_type = get_message_type(msg)
     chat = message.chat.id
     if "Text" == msg_type:
@@ -148,7 +151,7 @@ async def handle_private(client: Client, acc, message: Message, chatid: int, msg
             await client.send_message(chat, msg.text, entities=msg.entities, reply_to_message_id=message.id)
         except Exception as e:
             await client.send_message(message.chat.id, f"Error: {e}", reply_to_message_id=message.id)
-            return
+			return 
 
     smsg = await client.send_message(message.chat.id, 'Downloading', reply_to_message_id=message.id)
     dosta = asyncio.create_task(downstatus(client, f'{message.id}downstatus.txt', smsg))
@@ -157,7 +160,8 @@ async def handle_private(client: Client, acc, message: Message, chatid: int, msg
         os.remove(f'{message.id}downstatus.txt')
         
     except Exception as e:
-        await client.send_message(message.chat.id, f"Error: {e}", reply_to_message_id=message.id)  
+        await client.send_message(message.chat.id, f"Error: {e}", reply_to_message_id=message.id) 
+		return await smsg.delete()
     
     upsta = asyncio.create_task(upstatus(client, f'{message.id}upstatus.txt', smsg))
 
