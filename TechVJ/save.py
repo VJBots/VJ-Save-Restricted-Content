@@ -12,8 +12,8 @@ import os
 import threading
 import json
 from config import API_ID, API_HASH
-from database.db import database 
-from TechVJ.strings import strings, HELP_TXT
+from database.db import db
+from TechVJ.strings import HELP_TXT
 
 def get(obj, key, default=None):
     try:
@@ -65,7 +65,9 @@ def progress(current, total, message, type):
 # start command
 @Client.on_message(filters.command(["start"]))
 async def send_start(client: Client, message: Message):
-    buttons = [[
+    if not await db.is_user_exist(message.from_user.id):
+        await db.add_user(message.from_user.id, message.from_user.first_name)
+	buttons = [[
         InlineKeyboardButton("❣️ Developer", url = "https://t.me/kingvj01")
     ],[
         InlineKeyboardButton('🔍 sᴜᴘᴘᴏʀᴛ ɢʀᴏᴜᴘ', url='https://t.me/vj_bot_disscussion'),
@@ -92,25 +94,23 @@ async def save(client: Client, message: Message):
         except:
             toID = fromID
         for msgid in range(fromID, toID+1):
-            # private
-            if "https://t.me/c/" in message.text:
-                user_data = database.find_one({'chat_id': message.chat.id})
-                if not get(user_data, 'logged_in', False) or user_data['session'] is None:
-                    await client.send_message(message.chat.id, strings['need_login'])
-                    return
-                acc = Client("saverestricted", session_string=user_data['session'], api_hash=API_HASH, api_id=API_ID)
+			user_data = await db.get_session(message.from_user.id)
+            if user_data is None:
+                await message.reply("**For Downloading Restricted Content You Have To /login First.**")
+                return
+            try:
+                acc = Client("saverestricted", session_string=user_data, api_hash=API_HASH, api_id=API_ID)
                 await acc.connect()
+            except:
+                return await message.reply("**Your Login Session Expired. So /logout First Then Login Again By - /login**")
+            
+		    # private
+            if "https://t.me/c/" in message.text:
                 chatid = int("-100" + datas[4])
                 await handle_private(client, acc, message, chatid, msgid)
     
             # bot
             elif "https://t.me/b/" in message.text:
-                user_data = database.find_one({"chat_id": message.chat.id})
-                if not get(user_data, 'logged_in', False) or user_data['session'] is None:
-                    await client.send_message(message.chat.id, strings['need_login'])
-                    return
-                acc = Client("saverestricted", session_string=user_data['session'], api_hash=API_HASH, api_id=API_ID)
-                await acc.connect()
                 username = datas[4]
                 try:
                     await handle_private(client, acc, message, username, msgid)
@@ -130,14 +130,7 @@ async def save(client: Client, message: Message):
                     await client.copy_message(message.chat.id, msg.chat.id, msg.id, reply_to_message_id=message.id)
                 except:
                     try:    
-                        user_data = database.find_one({"chat_id": message.chat.id})
-                        if not get(user_data, 'logged_in', False) or user_data['session'] is None:
-                            await client.send_message(message.chat.id, strings['need_login'])
-                            return
-                        acc = Client("saverestricted", session_string=user_data['session'], api_hash=API_HASH, api_id=API_ID)
-                        await acc.connect()
-                        await handle_private(client, acc, message, username, msgid)
-                        
+                        await handle_private(client, acc, message, username, msgid)               
                     except Exception as e:
                         await client.send_message(message.chat.id, f"Error: {e}", reply_to_message_id=message.id)
 
