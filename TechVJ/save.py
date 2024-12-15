@@ -11,7 +11,7 @@ import time
 import os
 import threading
 import json
-from config import API_ID, API_HASH
+from config import API_ID, API_HASH, ERROR_MESSAGE
 from database.db import db
 from TechVJ.strings import HELP_TXT
 
@@ -108,7 +108,11 @@ async def save(client: Client, message: Message):
 		    # private
             if "https://t.me/c/" in message.text:
                 chatid = int("-100" + datas[4])
-                await handle_private(client, acc, message, chatid, msgid)
+                try:
+		    await handle_private(client, acc, message, chatid, msgid)
+		except Exception as e:
+                    if ERROR_MESSAGE == True:
+		        await client.send_message(message.chat.id, f"Error: {e}", reply_to_message_id=message.id)
     
             # bot
             elif "https://t.me/b/" in message.text:
@@ -116,7 +120,8 @@ async def save(client: Client, message: Message):
                 try:
                     await handle_private(client, acc, message, username, msgid)
                 except Exception as e:
-                    await client.send_message(message.chat.id, f"Error: {e}", reply_to_message_id=message.id)
+                    if ERROR_MESSAGE == True:
+		        await client.send_message(message.chat.id, f"Error: {e}", reply_to_message_id=message.id)
             
 	        # public
             else:
@@ -133,7 +138,8 @@ async def save(client: Client, message: Message):
                     try:    
                         await handle_private(client, acc, message, username, msgid)               
                     except Exception as e:
-                        await client.send_message(message.chat.id, f"Error: {e}", reply_to_message_id=message.id)
+			if ERROR_MESSAGE == True:
+                            await client.send_message(message.chat.id, f"Error: {e}", reply_to_message_id=message.id)
 
             # wait time
             await asyncio.sleep(3)
@@ -151,7 +157,8 @@ async def handle_private(client: Client, acc, message: Message, chatid: int, msg
             await client.send_message(chat, msg.text, entities=msg.entities, reply_to_message_id=message.id)
             return 
 	except Exception as e:
-            await client.send_message(message.chat.id, f"Error: {e}", reply_to_message_id=message.id)
+	    if ERROR_MESSAGE == True:
+                await client.send_message(message.chat.id, f"Error: {e}", reply_to_message_id=message.id)
 	    return 
 
     smsg = await client.send_message(message.chat.id, 'Downloading', reply_to_message_id=message.id)
@@ -161,7 +168,8 @@ async def handle_private(client: Client, acc, message: Message, chatid: int, msg
         os.remove(f'{message.id}downstatus.txt')
         
     except Exception as e:
-        await client.send_message(message.chat.id, f"Error: {e}", reply_to_message_id=message.id) 
+	if ERROR_MESSAGE == True:
+            await client.send_message(message.chat.id, f"Error: {e}", reply_to_message_id=message.id) 
 	return await smsg.delete()
     
     upsta = asyncio.create_task(upstatus(client, f'{message.id}upstatus.txt', smsg))
@@ -180,7 +188,8 @@ async def handle_private(client: Client, acc, message: Message, chatid: int, msg
         try:
             await client.send_document(chat, file, thumb=ph_path, caption=caption, reply_to_message_id=message.id, progress=progress, progress_args=[message,"up"])
         except Exception as e:
-            await client.send_message(message.chat.id, f"Error: {e}", reply_to_message_id=message.id)
+	    if ERROR_MESSAGE == True:
+                await client.send_message(message.chat.id, f"Error: {e}", reply_to_message_id=message.id)
         if ph_path != None: os.remove(ph_path)
         
 
@@ -193,28 +202,32 @@ async def handle_private(client: Client, acc, message: Message, chatid: int, msg
         try:
             await client.send_video(chat, file, duration=msg.video.duration, width=msg.video.width, height=msg.video.height, thumb=ph_path, caption=caption, reply_to_message_id=message.id, progress=progress, progress_args=[message,"up"])
         except Exception as e:
-            await client.send_message(message.chat.id, f"Error: {e}", reply_to_message_id=message.id)
+	    if ERROR_MESSAGE == True:
+                await client.send_message(message.chat.id, f"Error: {e}", reply_to_message_id=message.id)
         if ph_path != None: os.remove(ph_path)
 
     elif "Animation" == msg_type:
         try:
             await client.send_animation(chat, file, reply_to_message_id=message.id)
         except Exception as e:
-            await client.send_message(message.chat.id, f"Error: {e}", reply_to_message_id=message.id)
+	    if ERROR_MESSAGE == True:
+                await client.send_message(message.chat.id, f"Error: {e}", reply_to_message_id=message.id)
         
 
     elif "Sticker" == msg_type:
         try:
             await client.send_sticker(chat, file, reply_to_message_id=message.id)
         except Exception as e:
-            await client.send_message(message.chat.id, f"Error: {e}", reply_to_message_id=message.id)
+	    if ERROR_MESSAGE == True:
+                await client.send_message(message.chat.id, f"Error: {e}", reply_to_message_id=message.id)
         
 
     elif "Voice" == msg_type:
         try:
             await client.send_voice(chat, file, caption=caption, caption_entities=msg.caption_entities, reply_to_message_id=message.id, progress=progress, progress_args=[message,"up"])
         except Exception as e:
-            await client.send_message(message.chat.id, f"Error: {e}", reply_to_message_id=message.id)
+	    if ERROR_MESSAGE == True:
+                await client.send_message(message.chat.id, f"Error: {e}", reply_to_message_id=message.id)
 
     elif "Audio" == msg_type:
         try:
@@ -225,15 +238,17 @@ async def handle_private(client: Client, acc, message: Message, chatid: int, msg
         try:
             await client.send_audio(chat, file, thumb=ph_path, caption=caption, reply_to_message_id=message.id, progress=progress, progress_args=[message,"up"])   
         except Exception as e:
-            await client.send_message(message.chat.id, f"Error: {e}", reply_to_message_id=message.id)
+	    if ERROR_MESSAGE == True:
+                await client.send_message(message.chat.id, f"Error: {e}", reply_to_message_id=message.id)
         
         if ph_path != None: os.remove(ph_path)
 
     elif "Photo" == msg_type:
         try:
             await client.send_photo(chat, file, caption=caption, reply_to_message_id=message.id)
-        except Exception as e:
-            await client.send_message(message.chat.id, f"Error: {e}", reply_to_message_id=message.id)
+	except:
+	    if ERROR_MESSAGE == True:
+	        await client.send_message(message.chat.id, f"Error: {e}", reply_to_message_id=message.id)
     
     if os.path.exists(f'{message.id}upstatus.txt'): 
         os.remove(f'{message.id}upstatus.txt')
