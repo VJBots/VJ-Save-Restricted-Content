@@ -6,6 +6,8 @@
 
 <b>Watch Video Tutorial - [Click Here](https://youtu.be/CXw4NByRAac)</b>
 
+---
+
 ## Variables
 
 - `API_HASH` : Your API Hash From [my.telegram.org](https://my.telegram.org)
@@ -13,7 +15,18 @@
 - `BOT_TOKEN` : Your Bot Token From [BotFather](https://telegram.me/BotFather)
 - `ADMINS` : Your Admin Id For Broadcasting Message
 - `DB_URI` : Your Mongodb Database Url From [mongodb.com](https://mongodb.com) [video tutorial](https://youtu.be/DAHRmFdw99o)
-- `ERROR_MESSAGE` : Ser True Or False, If You Want Error Message Then True Else False.
+- `ERROR_MESSAGE` : Set True Or False, If You Want Error Message Then True Else False.
+
+---
+
+## Commands
+
+- `/start` : Check Bot Is Working Or Not
+- `/help` : Check How To Use Bot
+- `/login` : Login Your Telegram String Session 
+- `/logout` : Logout Your Session 
+- `/cancel` : Cancel Your Any Ongoing Task
+- `/broadcast` : Broadcast Message To User (Admin Only)
 
 ---
 
