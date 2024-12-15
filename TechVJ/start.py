@@ -117,14 +117,16 @@ async def save(client: Client, message: Message):
             user_data = await db.get_session(message.from_user.id)
             if user_data is None:
                 await message.reply("**For Downloading Restricted Content You Have To /login First.**")
+                batch_temp.IS_BATCH[message.from_user.id] = True
                 return
             try:
                 acc = Client("saverestricted", session_string=user_data, api_hash=API_HASH, api_id=API_ID)
                 await acc.connect()
             except:
+                batch_temp.IS_BATCH[message.from_user.id] = True
                 return await message.reply("**Your Login Session Expired. So /logout First Then Login Again By - /login**")
             
-		    # private
+            # private
             if "https://t.me/c/" in message.text:
                 chatid = int("-100" + datas[4])
                 try:
@@ -142,7 +144,7 @@ async def save(client: Client, message: Message):
                     if ERROR_MESSAGE == True:
                         await client.send_message(message.chat.id, f"Error: {e}", reply_to_message_id=message.id)
             
-	        # public
+            # public
             else:
                 username = datas[3]
 
