@@ -29,7 +29,7 @@ async def downstatus(client: Client, statusfile, message):
         with open(statusfile, "r") as downread:
             txt = downread.read()
         try:
-            if temp.IS_BATCH.get(message.from_user.id): break
+            if temp.IS_BATCH.get(message.from_user.id): return 
             await client.edit_message_text(message.chat.id, message.id, f"Downloaded : {txt}")
             await asyncio.sleep(10)
         except:
@@ -47,7 +47,7 @@ async def upstatus(client: Client, statusfile, message):
         with open(statusfile, "r") as upread:
             txt = upread.read()
         try:
-            if temp.IS_BATCH.get(message.from_user.id): break
+            if temp.IS_BATCH.get(message.from_user.id): return 
             await client.edit_message_text(message.chat.id, message.id, f"Uploaded : {txt}")
             await asyncio.sleep(10)
         except:
@@ -57,7 +57,7 @@ async def upstatus(client: Client, statusfile, message):
 # progress writer
 def progress(current, total, message, type):
     with open(f'{message.id}{type}status.txt', "w") as fileup:
-        if temp.IS_BATCH.get(message.from_user.id): break
+        if temp.IS_BATCH.get(message.from_user.id): return 
         fileup.write(f"{current * 100 / total:.1f}%")
 
 
