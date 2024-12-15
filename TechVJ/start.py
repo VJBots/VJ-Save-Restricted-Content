@@ -103,7 +103,7 @@ async def send_cancel(client: Client, message: Message):
 async def save(client: Client, message: Message):
     if "https://t.me/" in message.text:
         if batch_temp.IS_BATCH.get(message.from_user.id) == False:
-            return await message.reply_text("**One Batch Is Already Processing. Wait For Complete It. If You Want To Cancel This Batch Then Use - /cancel**")
+            return await message.reply_text("**One Task Is Already Processing. Wait For Complete It. If You Want To Cancel This Task Then Use - /cancel**")
         datas = message.text.split("/")
         temp = datas[-1].replace("?single","").split("-")
         fromID = int(temp[0].strip())
@@ -172,6 +172,7 @@ async def handle_private(client: Client, acc, message: Message, chatid: int, msg
         return 
     msg_type = get_message_type(msg)
     chat = message.chat.id
+    if batch_temp.IS_BATCH.get(message.from_user.id): return 
     if "Text" == msg_type:
         try:
             await client.send_message(chat, msg.text, entities=msg.entities, reply_to_message_id=message.id)
@@ -197,6 +198,7 @@ async def handle_private(client: Client, acc, message: Message, chatid: int, msg
         caption = msg.caption
     else:
         caption = None
+    if batch_temp.IS_BATCH.get(message.from_user.id): return 
             
     if "Document" == msg_type:
         try:
