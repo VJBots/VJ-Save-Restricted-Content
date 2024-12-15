@@ -15,7 +15,7 @@ from config import API_ID, API_HASH, ERROR_MESSAGE
 from database.db import db
 from TechVJ.strings import HELP_TXT
 
-class temp(object):
+class batch_temp(object):
     IS_BATCH = {}
 
 async def downstatus(client: Client, statusfile, message):
@@ -29,7 +29,7 @@ async def downstatus(client: Client, statusfile, message):
         with open(statusfile, "r") as downread:
             txt = downread.read()
         try:
-            if temp.IS_BATCH.get(message.from_user.id): return 
+            if batch_temp.IS_BATCH.get(message.from_user.id): return 
             await client.edit_message_text(message.chat.id, message.id, f"Downloaded : {txt}")
             await asyncio.sleep(10)
         except:
@@ -47,7 +47,7 @@ async def upstatus(client: Client, statusfile, message):
         with open(statusfile, "r") as upread:
             txt = upread.read()
         try:
-            if temp.IS_BATCH.get(message.from_user.id): return 
+            if batch_temp.IS_BATCH.get(message.from_user.id): return 
             await client.edit_message_text(message.chat.id, message.id, f"Uploaded : {txt}")
             await asyncio.sleep(10)
         except:
@@ -57,7 +57,7 @@ async def upstatus(client: Client, statusfile, message):
 # progress writer
 def progress(current, total, message, type):
     with open(f'{message.id}{type}status.txt', "w") as fileup:
-        if temp.IS_BATCH.get(message.from_user.id): return 
+        if batch_temp.IS_BATCH.get(message.from_user.id): return 
         fileup.write(f"{current * 100 / total:.1f}%")
 
 
@@ -93,7 +93,7 @@ async def send_help(client: Client, message: Message):
 # cancel command
 @Client.on_message(filters.command(["cancel"]))
 async def send_cancel(client: Client, message: Message):
-    temp.IS_BATCH[message.from_user.id] = True
+    batch_temp.IS_BATCH[message.from_user.id] = True
     await client.send_message(
         chat_id=message.chat.id, 
         text="**Batch Successfully Cancelled.**"
@@ -102,7 +102,7 @@ async def send_cancel(client: Client, message: Message):
 @Client.on_message(filters.text & filters.private)
 async def save(client: Client, message: Message):
     if "https://t.me/" in message.text:
-        if temp.IS_BATCH.get(message.from_user.id) == False:
+        if batch_temp.IS_BATCH.get(message.from_user.id) == False:
             return await message.reply_text("**One Batch Is Already Processing. Wait For Complete It. If You Want To Cancel This Batch Then Use - /cancel**")
         datas = message.text.split("/")
         temp = datas[-1].replace("?single","").split("-")
@@ -111,9 +111,9 @@ async def save(client: Client, message: Message):
             toID = int(temp[1].strip())
         except:
             toID = fromID
-        temp.IS_BATCH[message.from_user.id] = False
+        batch_temp.IS_BATCH[message.from_user.id] = False
         for msgid in range(fromID, toID+1):
-            if temp.IS_BATCH.get(message.from_user.id): break
+            if batch_temp.IS_BATCH.get(message.from_user.id): break
             user_data = await db.get_session(message.from_user.id)
             if user_data is None:
                 await message.reply("**For Downloading Restricted Content You Have To /login First.**")
@@ -162,7 +162,7 @@ async def save(client: Client, message: Message):
 
             # wait time
             await asyncio.sleep(3)
-        temp.IS_BATCH[message.from_user.id] = True
+        batch_temp.IS_BATCH[message.from_user.id] = True
 
 
 # handle private
