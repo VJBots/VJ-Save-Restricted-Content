@@ -149,7 +149,8 @@ async def handle_private(client: Client, acc, message: Message, chatid: int, msg
     if "Text" == msg_type:
         try:
             await client.send_message(chat, msg.text, entities=msg.entities, reply_to_message_id=message.id)
-        except Exception as e:
+            return 
+	except Exception as e:
             await client.send_message(message.chat.id, f"Error: {e}", reply_to_message_id=message.id)
 	    return 
 
