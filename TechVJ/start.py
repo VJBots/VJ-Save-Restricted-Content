@@ -159,7 +159,7 @@ async def handle_private(client: Client, acc, message: Message, chatid: int, msg
         except Exception as e:
             if ERROR_MESSAGE == True:
                 await client.send_message(message.chat.id, f"Error: {e}", reply_to_message_id=message.id)
-	    return 
+            return 
 
     smsg = await client.send_message(message.chat.id, 'Downloading', reply_to_message_id=message.id)
     dosta = asyncio.create_task(downstatus(client, f'{message.id}downstatus.txt', smsg))
@@ -170,7 +170,7 @@ async def handle_private(client: Client, acc, message: Message, chatid: int, msg
     except Exception as e:
         if ERROR_MESSAGE == True:
             await client.send_message(message.chat.id, f"Error: {e}", reply_to_message_id=message.id) 
-	return await smsg.delete()
+        return await smsg.delete()
     
     upsta = asyncio.create_task(upstatus(client, f'{message.id}upstatus.txt', smsg))
 
