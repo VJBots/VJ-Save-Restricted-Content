@@ -8,10 +8,12 @@
 
 ## Variables
 
-- `API_HASH` : Your API Hash from [my.telegram.org](https://my.telegram.org)
-- `API_ID` : Your API ID from [my.telegram.org](https://my.telegram.org)
-- `BOT_TOKEN` : Your bot token from [BotFather](https://telegram.me/BotFather)
-- `DB_URI` : Your Mongodb Database Url from [mongodb.com](https://mongodb.com) [video tutorial](https://youtu.be/DAHRmFdw99o)
+- `API_HASH` : Your API Hash From [my.telegram.org](https://my.telegram.org)
+- `API_ID` : Your API ID From [my.telegram.org](https://my.telegram.org)
+- `BOT_TOKEN` : Your Bot Token From [BotFather](https://telegram.me/BotFather)
+- `ADMINS` : Your Admin Id For Broadcasting Message
+- `DB_URI` : Your Mongodb Database Url From [mongodb.com](https://mongodb.com) [video tutorial](https://youtu.be/DAHRmFdw99o)
+- `ERROR_MESSAGE` : Ser True Or False, If You Want Error Message Then True Else False.
 
 ---
 
