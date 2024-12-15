@@ -30,7 +30,7 @@ async def downstatus(client: Client, statusfile, message):
             txt = downread.read()
         try:
             if batch_temp.IS_BATCH.get(message.from_user.id): return 
-            await client.edit_message_text(message.chat.id, message.id, f"<b>Downloaded : {txt}</b>")
+            await client.edit_message_text(message.chat.id, message.id, f"**Downloaded:** **{txt}**")
             await asyncio.sleep(10)
         except:
             await asyncio.sleep(5)
@@ -48,7 +48,7 @@ async def upstatus(client: Client, statusfile, message):
             txt = upread.read()
         try:
             if batch_temp.IS_BATCH.get(message.from_user.id): return 
-            await client.edit_message_text(message.chat.id, message.id, f"<b>Uploaded : {txt}</b>")
+            await client.edit_message_text(message.chat.id, message.id, f"**Uploaded:** **{txt}**")
             await asyncio.sleep(10)
         except:
             await asyncio.sleep(5)
@@ -182,7 +182,7 @@ async def handle_private(client: Client, acc, message: Message, chatid: int, msg
                 await client.send_message(message.chat.id, f"Error: {e}", reply_to_message_id=message.id, parse_mode=enums.ParseMode.HTML)
             return 
 
-    smsg = await client.send_message(message.chat.id, '<b>Downloading</b>', reply_to_message_id=message.id, parse_mode=enums.ParseMode.HTML)
+    smsg = await client.send_message(message.chat.id, '**Downloading**', reply_to_message_id=message.id)
     dosta = asyncio.create_task(downstatus(client, f'{message.id}downstatus.txt', smsg))
     try:
         file = await acc.download_media(msg, progress=progress, progress_args=[message,"down"])
