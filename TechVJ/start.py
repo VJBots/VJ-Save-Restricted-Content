@@ -30,7 +30,7 @@ async def downstatus(client: Client, statusfile, message):
             txt = downread.read()
         try:
             if batch_temp.IS_BATCH.get(message.from_user.id): return 
-            await client.edit_message_text(message.chat.id, message.id, f"<b>Downloaded : {txt}</b>", parse_mode=enums.ParseMode.HTML)
+            await client.edit_message_text(message.chat.id, message.id, f"<b>Downloaded : {txt}</b>")
             await asyncio.sleep(10)
         except:
             await asyncio.sleep(5)
@@ -48,7 +48,7 @@ async def upstatus(client: Client, statusfile, message):
             txt = upread.read()
         try:
             if batch_temp.IS_BATCH.get(message.from_user.id): return 
-            await client.edit_message_text(message.chat.id, message.id, f"<b>Uploaded : {txt}</b>", parse_mode=enums.ParseMode.HTML)
+            await client.edit_message_text(message.chat.id, message.id, f"<b>Uploaded : {txt}</b>")
             await asyncio.sleep(10)
         except:
             await asyncio.sleep(5)
