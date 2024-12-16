@@ -52,7 +52,6 @@ async def upstatus(client: Client, statusfile, message):
 # progress writer
 def progress(current, total, message, type):
     with open(f'{message.id}{type}status.txt', "w") as fileup:
-        if batch_temp.IS_BATCH.get(message.from_user.id): return 
         fileup.write(f"{current * 100 / total:.1f}%")
 
 
