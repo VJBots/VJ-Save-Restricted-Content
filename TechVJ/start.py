@@ -26,7 +26,6 @@ async def downstatus(client: Client, statusfile, message):
         with open(statusfile, "r") as downread:
             txt = downread.read()
         try:
-            if batch_temp.IS_BATCH.get(message.from_user.id): return 
             await client.edit_message_text(message.chat.id, message.id, f"**Downloaded:** **{txt}**")
             await asyncio.sleep(10)
         except:
@@ -44,7 +43,6 @@ async def upstatus(client: Client, statusfile, message):
         with open(statusfile, "r") as upread:
             txt = upread.read()
         try:
-            if batch_temp.IS_BATCH.get(message.from_user.id): return 
             await client.edit_message_text(message.chat.id, message.id, f"**Uploaded:** **{txt}**")
             await asyncio.sleep(10)
         except:
