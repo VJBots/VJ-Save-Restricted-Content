@@ -15,7 +15,7 @@ from TechVJ.strings import HELP_TXT
 class batch_temp(object):
     IS_BATCH = {}
 
-async def downstatus(client: Client, statusfile, message, chat):
+async def downstatus(client, statusfile, message, chat):
     while True:
         if os.path.exists(statusfile):
             break
@@ -33,7 +33,7 @@ async def downstatus(client: Client, statusfile, message, chat):
 
 
 # upload status
-async def upstatus(client: Client, statusfile, message, chat):
+async def upstatus(client, statusfile, message, chat):
     while True:
         if os.path.exists(statusfile):
             break
@@ -179,15 +179,16 @@ async def handle_private(client: Client, acc, message: Message, chatid: int, msg
             return 
 
     smsg = await client.send_message(message.chat.id, '**Downloading**', reply_to_message_id=message.id)
-    dosta = asyncio.create_task(downstatus(client, f'{message.id}downstatus.txt', smsg, chat))
+    asyncio.create_task(downstatus(client, f'{message.id}downstatus.txt', smsg, chat))
     try:
-        file = await acc.download_media(msg, progress=progress, progress_args=[message,"down"])      
+        file = await acc.download_media(msg, progress=progress, progress_args=[message,"down"])
+        os.remove(f'{message.id}downstatus.txt')
     except Exception as e:
         if ERROR_MESSAGE == True:
             await client.send_message(message.chat.id, f"Error: {e}", reply_to_message_id=message.id, parse_mode=enums.ParseMode.HTML) 
         return await smsg.delete()
     if batch_temp.IS_BATCH.get(message.from_user.id): return 
-    upsta = asyncio.create_task(upstatus(client, f'{message.id}upstatus.txt', smsg, chat))
+    asyncio.create_task(upstatus(client, f'{message.id}upstatus.txt', smsg, chat))
 
     if msg.caption:
         caption = msg.caption
@@ -264,8 +265,6 @@ async def handle_private(client: Client, acc, message: Message, chatid: int, msg
             if ERROR_MESSAGE == True:
                 await client.send_message(message.chat.id, f"Error: {e}", reply_to_message_id=message.id, parse_mode=enums.ParseMode.HTML)
     
-    if os.path.exists(f'{message.id}downstatus.txt'): 
-        os.remove(f'{message.id}downstatus.txt')
     if os.path.exists(f'{message.id}upstatus.txt'): 
         os.remove(f'{message.id}upstatus.txt')
         os.remove(file)
