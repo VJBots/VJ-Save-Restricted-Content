@@ -4,7 +4,7 @@
 
 ---
 
-<b>Watch Video Tutorial - [Click Here](https://youtu.be/CXw4NByRAac)</b>
+<b>Watch Video Tutorial - [Click Here](https://youtu.be/BFEvSX5vIMg)</b>
 
 ---
 
