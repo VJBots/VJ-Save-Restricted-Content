@@ -15,7 +15,7 @@ from TechVJ.strings import HELP_TXT
 class batch_temp(object):
     IS_BATCH = {}
 
-async def downstatus(client: Client, statusfile, message):
+async def downstatus(client: Client, statusfile, message, chat):
     while True:
         if os.path.exists(statusfile):
             break
@@ -26,14 +26,15 @@ async def downstatus(client: Client, statusfile, message):
         with open(statusfile, "r") as downread:
             txt = downread.read()
         try:
-            await client.edit_message_text(message.chat.id, message.id, f"**Downloaded:** **{txt}**")
+            if batch_temp.IS_BATCH.get(chat): return 
+            await client.edit_message_text(chat, message.id, f"**Downloaded:** **{txt}**")
             await asyncio.sleep(10)
         except:
             await asyncio.sleep(5)
 
 
 # upload status
-async def upstatus(client: Client, statusfile, message):
+async def upstatus(client: Client, statusfile, message, chat):
     while True:
         if os.path.exists(statusfile):
             break
@@ -43,7 +44,8 @@ async def upstatus(client: Client, statusfile, message):
         with open(statusfile, "r") as upread:
             txt = upread.read()
         try:
-            await client.edit_message_text(message.chat.id, message.id, f"**Uploaded:** **{txt}**")
+            if batch_temp.IS_BATCH.get(chat): return 
+            await client.edit_message_text(chat, message.id, f"**Uploaded:** **{txt}**")
             await asyncio.sleep(10)
         except:
             await asyncio.sleep(5)
@@ -179,7 +181,7 @@ async def handle_private(client: Client, acc, message: Message, chatid: int, msg
             return 
 
     smsg = await client.send_message(message.chat.id, '**Downloading**', reply_to_message_id=message.id)
-    dosta = asyncio.create_task(downstatus(client, f'{message.id}downstatus.txt', smsg))
+    dosta = asyncio.create_task(downstatus(client, f'{message.id}downstatus.txt', smsg, chat))
     try:
         file = await acc.download_media(msg, progress=progress, progress_args=[message,"down"])
         os.remove(f'{message.id}downstatus.txt')
@@ -188,7 +190,8 @@ async def handle_private(client: Client, acc, message: Message, chatid: int, msg
         if ERROR_MESSAGE == True:
             await client.send_message(message.chat.id, f"Error: {e}", reply_to_message_id=message.id, parse_mode=enums.ParseMode.HTML) 
         return await smsg.delete()
-    upsta = asyncio.create_task(upstatus(client, f'{message.id}upstatus.txt', smsg))
+    if batch_temp.IS_BATCH.get(message.from_user.id): return 
+    upsta = asyncio.create_task(upstatus(client, f'{message.id}upstatus.txt', smsg, chat))
 
     if msg.caption:
         caption = msg.caption
