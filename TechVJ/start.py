@@ -26,7 +26,6 @@ async def downstatus(client: Client, statusfile, message, chat):
         with open(statusfile, "r") as downread:
             txt = downread.read()
         try:
-            if batch_temp.IS_BATCH.get(chat): return 
             await client.edit_message_text(chat, message.id, f"**Downloaded:** **{txt}**")
             await asyncio.sleep(10)
         except:
@@ -44,7 +43,6 @@ async def upstatus(client: Client, statusfile, message, chat):
         with open(statusfile, "r") as upread:
             txt = upread.read()
         try:
-            if batch_temp.IS_BATCH.get(chat): return 
             await client.edit_message_text(chat, message.id, f"**Uploaded:** **{txt}**")
             await asyncio.sleep(10)
         except:
@@ -183,9 +181,7 @@ async def handle_private(client: Client, acc, message: Message, chatid: int, msg
     smsg = await client.send_message(message.chat.id, '**Downloading**', reply_to_message_id=message.id)
     dosta = asyncio.create_task(downstatus(client, f'{message.id}downstatus.txt', smsg, chat))
     try:
-        file = await acc.download_media(msg, progress=progress, progress_args=[message,"down"])
-        os.remove(f'{message.id}downstatus.txt')
-        
+        file = await acc.download_media(msg, progress=progress, progress_args=[message,"down"])      
     except Exception as e:
         if ERROR_MESSAGE == True:
             await client.send_message(message.chat.id, f"Error: {e}", reply_to_message_id=message.id, parse_mode=enums.ParseMode.HTML) 
@@ -268,6 +264,8 @@ async def handle_private(client: Client, acc, message: Message, chatid: int, msg
             if ERROR_MESSAGE == True:
                 await client.send_message(message.chat.id, f"Error: {e}", reply_to_message_id=message.id, parse_mode=enums.ParseMode.HTML)
     
+    if os.path.exists(f'{message.id}downstatus.txt'): 
+        os.remove(f'{message.id}downstatus.txt')
     if os.path.exists(f'{message.id}upstatus.txt'): 
         os.remove(f'{message.id}upstatus.txt')
         os.remove(file)
