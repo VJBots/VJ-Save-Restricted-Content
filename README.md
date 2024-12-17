@@ -4,7 +4,7 @@
 
 ---
 
-<b>Watch Video Tutorial - [Click Here](https://youtu.be/CXw4NByRAac)</b>
+<b>Watch Video Tutorial - [Click Here](https://youtu.be/BFEvSX5vIMg)</b>
 
 ---
 
@@ -30,7 +30,7 @@
 
 ---
 
-# Usage
+## Usage
 
 __FOR PUBLIC CHATS__
 
@@ -64,7 +64,9 @@ https://t.me/c/xxxx/101 - 120
 
 _note that space in between doesn't matter_
 
-### Credits
+---
+
+## Credits
 
 - <b>Thanks To [BipinKrish](https://github.com/bipinkrish) For Base Repo
 - Thanks To [Tech VJ](https://telegram.dog/Kingvj01) For Modify & Added Login Feature.</b>
