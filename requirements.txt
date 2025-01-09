@@ -1,4 +1,4 @@
-pyrofork==2.3.45
+pyrofork==2.3.48
 tgcrypto
 motor
 Flask==1.1.2
